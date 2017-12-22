@@ -1,0 +1,115 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
+    <style>
+        .list-filter a {
+            display: inline-block;
+            padding: 3px 6px;
+            margin: 3px 0;
+            border: 1px solid #2e6da4;
+
+        }
+
+        .list-filter a.active {
+            background-color: #2e6da4;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container" style="margin-top: 50px">
+
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">列表页面</div>
+            <div class="panel-body">
+                <div class="list-filter">
+                    {% for item in c1.gen_comb_filter %}
+                        <div>
+                            {% for col in item %}
+                                {{ col }}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div>
+                    {% if c1.show_add_btn %}
+                        <a href="{{ c1.add_url }}">
+                            <div style="margin: 5px 0">
+                                <button class="btn btn-success">添加</button>
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+                {% if c1.show_search_form %}
+                    <div class="form-group pull-right">
+                        <form method="get">
+                            <input type="text" class="form-control" placeholder="请输入搜索条件" name="{{ c1.search_key }}"
+                                   value="{{ c1.search_form_val }}" style="display: inline-block;width: 200px"/>
+                            <button class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                        </form>
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    {% if c1.show_actions %}
+                        <div>
+                            <select name="list_action" class="form-control" id=""
+                                    style="display:inline-block;width: 200px;">
+                                {% for item in c1.modify_actions %}
+                                    <option value="{{ item.name }}">{{ item.text }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-primary">执行</button>
+                        </div>
+                    {% endif %}
+
+
+
+                    <table class="table table-bordered table-hover text-center">
+                        <thead>
+                        <tr>
+                            {% for head in c1.head_list %}
+                                <td>{{ head }}</td>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in c1.body_list %}
+                            <tr>
+                                {% for col in item %}
+                                    <td>{{ col }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </form>
+            </div>
+            <div class="panel-footer text-center">
+                <div class="bs-example" data-example-id="disabled-active-pagination">
+                    <nav aria-label="...">
+                        <ul class="pagination">
+                            {{ c1.pager_obj.page_html|safe }}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
