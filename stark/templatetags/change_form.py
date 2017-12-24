@@ -4,8 +4,11 @@
 
 from django.template import Library
 from django.urls import reverse
+from django.db.models import DateField
 
 from stark.service.star import site
+
+from django.forms.boundfield import BoundField
 
 register = Library()
 
@@ -18,7 +21,8 @@ def form(model_form_obj):
     '''
     new_form = []
     for bfield in model_form_obj:  #这里的
-        temp = {"is_popup":False,"item":bfield}
+
+        temp = {"is_popup":False,"item":bfield,"is_date":False}
         from django.forms.models import ModelChoiceField
         if isinstance(bfield.field,ModelChoiceField):
             related_class_name = bfield.field.queryset.model  #根据字段找多啊表名
@@ -28,6 +32,10 @@ def form(model_form_obj):
                 popurl = "%s?_popbackid=%s"%(base_url,bfield.auto_id)
                 temp["is_popup"] = True
                 temp["popup_url"] = popurl
+
+        if  type(bfield.field).__name__ == "DateField":
+            bfield.field.widget_attrs("is_date")
+            temp["is_date"] = True
         new_form.append(temp)
     return {"form":new_form}
 

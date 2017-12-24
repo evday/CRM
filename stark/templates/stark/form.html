@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <div class="container">
     <div class="row col-md-6 col-md-offset-2">
         <form method="post" novalidate class="form-horizontal">
@@ -8,7 +9,10 @@
                     <div class="col-sm-9" style="position: relative">
                         <!-- 判断，如果field是ModelChoiceField，则FK； 如果是ModelMultipleChoiceField，则M2M -->
                         <div class="col-md-10">
-                            {{ dic.item }}
+
+
+                                {{ dic.item }}
+
                         </div>
                         <div style="position: absolute;right: 75px;top: 8px">
                             {% if dic.is_popup %}
@@ -31,6 +35,10 @@
     </div>
 
 
+    <script src="{% static 'stark/bootstrap/js/jquery-3.1.1.js' %}"></script>
+    <script src="{% static 'stark/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'stark/bootstrap/js/bootstrap-datetimepicker.js' %}"></script>
+    <script src="{% static 'stark/bootstrap/js/bootstrap-datetimepicker.zh-CN.js' %}"></script>
     <script type="text/javascript">
         function popupCallback(dic) {
             var op = document.createElement("option");
@@ -43,5 +51,18 @@
         function popUp(url) {
             var popupPage = window.open(url, url, "height:300,width:300")
         }
+        $('.form_date').datetimepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
+            bootcssVer: 3,//bootstrap3,避免小图标不出现,好像没什么卵用
+            weekStart: 1,
+            startDate: new Date(), //起始时间
+            todayBtn: 1,
+            autoclose: 1, //是否自动关闭
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+        })
     </script>
 </div>

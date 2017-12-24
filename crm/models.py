@@ -97,7 +97,7 @@ class Customer(models.Model):
         (7, '五年以上'),
     ]
 
-    experience = models.IntegerField(verbose_name="工作经验",blank=True,null=True,choices=education_choices)
+    experience = models.IntegerField(verbose_name="工作经验",blank=True,null=True,choices=experience_choices)
 
     work_status_choices = [
         (1, '在职'),
@@ -131,6 +131,8 @@ class Customer(models.Model):
     #自关联
     referral_form = models.ForeignKey(
         "self",
+        null=True,
+        blank=True,
         verbose_name="转介绍学员",
         help_text="若此客户是转介绍自内部学员,请在此处选择内部学员姓名",
         related_name="internal_referral"

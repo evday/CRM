@@ -193,12 +193,14 @@ class ChangeList(object):
         for option in self.comb_filters:#option 是在 stark.py 中实例化的FilterOption对象
             _filed = self.model_class._meta.get_field(option.field_name) #获取字段
             if isinstance(_filed,ForeignKey):
+                print(_filed,"+++++++++++++++++++++++++")
                 #获取当前字段关联的表，并获取其中所有数据
                 # data_list.append(_filed.rel.to.objects.all())
                 row = FilerRow(option,option.get_queryset(_filed),self.request)
             elif isinstance(_filed,ManyToManyField):
                 # data_list.append(_filed.rel.to.objects.all())
                 row = FilerRow(option, option.get_queryset(_filed), self.request)
+
             else:
                 # data_list.append(_filed.choices)
                 row = FilerRow(option,option.get_choices(_filed),self.request)
