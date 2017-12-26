@@ -13,12 +13,13 @@ from django.forms.boundfield import BoundField
 register = Library()
 
 @register.inclusion_tag("stark/form.html")
-def form(model_form_obj):
+def form(config,model_form_obj):
     '''
     自定义标签，处理popup
     :param model_form_obj:
     :return:
     '''
+    print(type(config),'==================')
     new_form = []
     for bfield in model_form_obj:  #这里的
 
@@ -28,8 +29,13 @@ def form(model_form_obj):
             related_class_name = bfield.field.queryset.model  #根据字段找多啊表名
             if related_class_name in site._registry: #说明是注册到stark.py 中的
                 app_model_name = related_class_name._meta.app_label,related_class_name._meta.model_name
+
+                #当前字段所在的类名related_name
+                _model_name = config.model_class._meta.model_name #类名
+                _related_name = config.model_class._meta.get_field(bfield.name).rel.related_name
+
                 base_url = reverse("stark:%s_%s_add"%app_model_name) #拼接页面路径
-                popurl = "%s?_popbackid=%s"%(base_url,bfield.auto_id)
+                popurl = "%s?_popbackid=%s&model_name=%s&related_name=%s"%(base_url,bfield.auto_id,_model_name,_related_name)
                 temp["is_popup"] = True
                 temp["popup_url"] = popurl
 
