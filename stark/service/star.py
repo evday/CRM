@@ -120,6 +120,7 @@ class ChangeList(object):
         self.actions = config.get_actions()
         self.show_actions = config.get_show_actions()
         self.comb_filters = config.get_comb_filters()
+        self.show_comb_filters = config.get_show_comb_filters()
         self.edit_link = config.get_edit_link()
         # 搜索
         self.show_search_form = config.get_show_search_form()  # 是否显示搜索框
@@ -350,6 +351,11 @@ class StarkConfig(object):
             result.extend(self.comb_filters)
         return result
 
+    show_comb_filters = False
+    def get_show_comb_filters(self):
+        if self.show_comb_filters:
+            return self.show_comb_filters
+
     # 配置动态编辑项
     edit_link = []
 
@@ -478,8 +484,8 @@ class StarkConfig(object):
                                               {'json_result': json.dumps(result, ensure_ascii=False)})
                     return render(request, 'stark/pupup_response.html',
                                   {'json_result': json.dumps(result, ensure_ascii=False)})
-            else:
-                return redirect(self.get_changelist_url())
+                else:
+                    return redirect(self.get_changelist_url())
             return render(request, 'stark/add_view.html', {'form': form, 'config': self})
     # 删除页面视图
     def delete_view(self, request, nid, *args, **kwargs):

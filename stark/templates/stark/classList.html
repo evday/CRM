@@ -30,6 +30,7 @@
         <div class="panel panel-primary">
             <div class="panel-heading">列表页面</div>
             <div class="panel-body">
+            {% if c1.show_comb_filters %}
                 <div class="list-filter">
                     {% for item in c1.gen_comb_filter %}
                         <div>
@@ -39,6 +40,7 @@
                         </div>
                     {% endfor %}
                 </div>
+            {% endif %}
                 <div>
                     {% if c1.show_add_btn %}
                         <a href="{{ c1.add_url }}">
@@ -61,9 +63,10 @@
                 <form method="post">
                     {% csrf_token %}
                     {% if c1.show_actions %}
-                        <div>
+                        <div style="margin-bottom: 10px">
                             <select name="list_action" class="form-control" id=""
                                     style="display:inline-block;width: 200px;">
+                                <option value="">请输入条件</option>
                                 {% for item in c1.modify_actions %}
                                     <option value="{{ item.name }}">{{ item.text }}</option>
                                 {% endfor %}

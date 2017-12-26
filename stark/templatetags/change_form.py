@@ -19,7 +19,7 @@ def form(config,model_form_obj):
     :param model_form_obj:
     :return:
     '''
-    print(type(config),'==================')
+
     new_form = []
     for bfield in model_form_obj:  #这里的
 

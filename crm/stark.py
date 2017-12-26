@@ -6,10 +6,16 @@ from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 from django.shortcuts import redirect,HttpResponse
 from django.conf.urls import url
+from django.forms import Form
+from django.forms import fields
+from django.forms import widgets
+from django.shortcuts import render
+from django.urls import reverse
 
 from stark.service import star
 from crm import models
-
+from crm.configs.student import StudentConfig
+from crmpro.utils.pager import Pagination
 
 class DepartmentConfigForm(ModelForm):
     class Meta:
@@ -181,7 +187,6 @@ class CustomerConfig(star.StarkConfig):
 
 star.site.register(models.Customer,CustomerConfig)
 
-
 class ConsultRecordConfig(star.StarkConfig):
     list_display = ["customer","consultant","date"]
     show_add_btn = True
@@ -197,3 +202,135 @@ class ConsultRecordConfig(star.StarkConfig):
             return HttpResponse("别抢客户呀...")
         return super(ConsultRecordConfig,self).changelist_view(request,*args,**kwargs)
 star.site.register(models.ConsultRecord,ConsultRecordConfig)
+
+#老师上课记录
+class CourseRecordConfig(star.StarkConfig):
+    def extra_url(self):
+        app_model_name = (self.model_class._meta.app_label, self.model_class._meta.model_name)
+        url_list = [
+            url(r'^(\d+)/score_list/$', self.wrapper(self.score_list), name="%s_%s_score_list" % app_model_name),
+        ]
+        return url_list
+
+    def score_list(self, request, record_id):
+        if request.method == "GET":
+            data = []
+            student_record_list = models.StudentRecord.objects.filter(course_record_id = record_id)
+            #给每一个学习记录对象生成一个option 评分下拉框和一个评语text area
+            for obj in student_record_list:
+                TempForm = type("TempForm",(Form,),{
+                    "score_%s"%obj.pk:fields.ChoiceField(choices=models.StudentRecord.score_choices,widget=widgets.Select(attrs={"class":"form-control"})),
+                    "homework_note_%s"%obj.pk:fields.CharField(widget=widgets.Textarea(attrs={"rows":1,"cols":60,"class":"form-control"}))
+                })
+                data.append({"obj":obj,"form":TempForm(initial={"score_%s"%obj.pk:obj.score,"homework_note_%s"%obj.pk:obj.homework_note})})
+            pager_obj = Pagination(request.GET.get('page', 1), len(data), request.path_info,request.GET)
+            host_list = data[pager_obj.start:pager_obj.end]
+            html = pager_obj.page_html()
+
+            return render(request,"score_list.html",{"data":host_list,"page_html":html})
+        else:
+            data_dict = {}
+            for key,value in request.POST.items():
+                if key == "csrfmiddlewaretoken":
+                    continue
+                name,nid = key.rsplit("_",1)
+                if nid in data_dict:
+                    data_dict[nid][name] = value
+                else:
+                    data_dict[nid] = {name:value}
+            for nid,update_dict in data_dict.items():
+                models.StudentRecord.objects.filter(id=nid).update(**update_dict)
+            return redirect(request.path_info)
+
+
+    def attendance(self,obj = None,is_header = False):
+        if is_header:
+            return "考勤"
+        return mark_safe("<a href='/stark/crm/studentrecord/?course_record=%s'>考勤管理</a>"%obj.pk)
+
+    def display_score_list(self,obj = None,is_header = False):
+        if is_header:
+            return "成绩录入"
+        #反向生成url
+        url = reverse("stark:crm_courserecord_score_list",args=(obj.pk,))
+        return mark_safe("<a href='%s'>成绩录入</a>"%url)
+
+
+
+    list_display = ["class_obj","day_num",attendance,display_score_list]
+    show_add_btn = True
+    edit_link = ["class_obj"]
+    show_actions = True
+
+
+
+    def multi_init(self,request):
+        """
+        自定义学生上课记录初始化
+        :param request:
+        :return:
+        """
+        pk_list = request.POST.get("pk") #老师上课记录ID
+
+        record_list = models.CourseRecord.objects.filter(id__in=pk_list)
+        for record in record_list:
+            exist = models.StudentRecord.objects.filter(course_record=record).exists()
+            if exist:
+                continue
+            student_list = models.Student.objects.filter(class_list=record.class_obj)
+            bulk_list = []
+            for student in student_list:
+                bulk_list.append(models.StudentRecord(student=student,course_record=record))
+            models.StudentRecord.objects.bulk_create(bulk_list)
+
+
+    multi_init.short_desc = "学生上课记录初始化"
+    actions = [multi_init]
+star.site.register(models.CourseRecord,CourseRecordConfig)
+
+class StudentRecordConfig(star.StarkConfig):
+
+    def display_record(self,obj = None,is_header = False):
+        if is_header:
+            return "考勤"
+        return obj.get_record_display()
+    list_display = ["course_record","student",display_record]
+
+    comb_filters = [
+        star.FilterOption("course_record")
+    ]
+
+    edit_link = ["course_record"]
+
+    def action_checked(self,request):
+        pk_list = request.POST.getlist("pk")
+        models.StudentRecord.objects.filter(id__in=pk_list).update(record="checked")
+    action_checked.short_desc = "签到"
+
+    def action_vacate(self,request):
+        pk_list = request.POST.getlist("pk")
+        models.StudentRecord.objects.filter(id__in=pk_list).update(record="vacate")
+    action_vacate.short_desc = "请假"
+
+    def action_late(self,request):
+        pk_list = request.POST.getlist("pk")
+        models.StudentRecord.objects.filter(id__in=pk_list).update(record="late")
+    action_late.short_desc = "迟到"
+
+    def action_noshow(self,request):
+        pk_list = request.POST.getlist("pk")
+        models.StudentRecord.objects.filter(id__in=pk_list).update(record="noshow")
+    action_noshow.short_desc = "缺勤"
+    def action_leave_early(self,request):
+
+        pk_list = request.POST.getlist("pk")
+        models.StudentRecord.objects.filter(id__in = pk_list).update(record = "leave_early")
+    action_leave_early.short_desc = "早退"
+
+    actions = [action_checked,action_vacate,action_late,action_noshow,action_leave_early]
+    show_actions = True
+
+
+star.site.register(models.StudentRecord,StudentRecordConfig)
+
+star.site.register(models.Student,StudentConfig)

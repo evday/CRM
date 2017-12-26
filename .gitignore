@@ -102,3 +102,4 @@ ENV/
 # My configurations:
 .idea
 .migrations
+.record/

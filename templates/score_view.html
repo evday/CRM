@@ -1,0 +1,116 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
+</head>
+<body>
+
+
+<div class="container" style="margin-top: 50px">
+
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">查看成绩</div>
+            <div class="panel-body">
+
+
+                <table class="table table-bordered table-hover text-center">
+                    <tbody>
+                    <tr id="classList" sid="{{ sid }}">
+                        {% for class in class_list %}
+
+                            <td cid="{{ class.id }}">{{ class.course.name }}({{ class.semester }})期</td>
+                            <td id="chart"><button class="btn btn-success">查看成绩</button></td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="container" style="min-width:400px;height:400px"></div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'stark/bootstrap/js/jquery-3.1.1.js' %}"></script>
+<script src="{% static 'js/highcharts.js' %}"></script>
+<script>
+
+    $("#chart").click(function () {
+
+        var cid = $(this).parent().children().first().attr("cid");
+        var sid = $("#classList").attr("sid");
+        $.ajax({
+            url: '/stark/crm/student/chart/',
+            type: "get",
+            data: {"cid": cid, "sid": sid},
+            dataType: 'JSON',
+            success: function (arg) {
+
+                console.log(arg.data);
+                var config = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: '学生成绩'
+                    },
+                    subtitle: {
+                        text: '数据截止 2017-03，来源: <a >Wikipedia</a>'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        labels: {
+                            rotation: -45,
+                            style: {
+                                fontSize: '13px',
+                                fontFamily: 'Verdana, sans-serif'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: '分数'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        pointFormat: '成绩: <b>{point.y}</b>'
+                    },
+                    series: [{
+                        name: '总人口',
+                        data: [],
+                        dataLabels: {
+                            enabled: true,
+                            rotation: -90,
+                            color: '#FFFFFF',
+                            align: 'right',
+                            format: '{point.y}', // one decimal
+                            y: 10, // 10 pixels down from the top
+                            style: {
+                                fontSize: '18px',
+                                fontFamily: 'Verdana, sans-serif'
+                            }
+                        }
+                    }]
+                };
+                config.series[0].data = arg.data;
+                Highcharts.chart("container", config)
+            }
+        })
+    });
+
+
+</script>
+
+</body>
+</html>
