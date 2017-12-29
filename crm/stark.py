@@ -11,10 +11,12 @@ from django.forms import fields
 from django.forms import widgets
 from django.shortcuts import render
 from django.urls import reverse
+from django.conf import settings
 
 from stark.service import star
 from crm import models
 from crm.configs.student import StudentConfig
+from crm.configs.customer import CustomerConfig
 from crmpro.utils.pager import Pagination
 
 class DepartmentConfigForm(ModelForm):
@@ -125,79 +127,41 @@ class ClassListConfig(star.StarkConfig):
             return "人数"
         return "%s人" % obj.student_set.all().count()
 
-    list_display = ["school",course_semester,num,"start_date"]
+    def start_time(self,obj = None,is_header = False):
+        if is_header:
+            return "开班时间"
+        return obj.start_date.strftime("%Y-%m-%d")
+
+    list_display = ["school",course_semester,num,start_time]
     show_add_btn = True
     edit_link = [course_semester,]
 
 star.site.register(models.ClassList,ClassListConfig)
 
-class CustomerConfig(star.StarkConfig):
-    show_add_btn = True
-    edit_link = ["qq",]
-    def display_gender(self,obj = None,is_header = False):
-        if is_header:
-            return "性别"
-        return obj.get_gender_display()
-    def display_course(self,obj = None,is_header = False):
-        if is_header:
-            return "咨询课程"
-        course_list = obj.course.all()
-        html = []
-        #构造标签
-        for item in course_list:
-            temp = "<a style='display:inline-block;padding:3px 5px;border:1px solid blue;margin:2px;' href='/stark/crm/customer/%s/%s/dc/'>%s<span class='glyphicon glyphicon-remove'></span></a>"%(obj.pk,item.pk,item.name)
-            html.append(temp)
-        return mark_safe("".join(html))
-
-    def display_status(self,obj = None,is_header = False):
-        if is_header:
-            return "状态"
-        return obj.get_status_display()
-
-    def record(self,obj = None,is_header = False):
-        if is_header:
-            return '跟进记录'
-        return mark_safe("<a href='/stark/crm/consultrecord/?customer = %s'>查看跟进记录</a>"%(obj.pk))
-
-
-    list_display = ["qq","name",display_gender,display_course,display_status,record]
-
-    def delete_course(self,request,customer_id,course_id):
-        '''
-        删除当前客户感兴趣的课程
-        :param request:
-        :param customer_id:
-        :param course_id:
-        :return:
-        '''
-        customer_obj = self.model_class.objects.filter(pk=customer_id).first()
-        customer_obj.course.remove(course_id)
-        return redirect(self.get_changelist_url())
-
-    def extra_url(self):
-        '''
-        扩展除增删改查之外的url
-        :return:
-        '''
-        app_model_name = (self.model_class._meta.app_label,self.model_class._meta.model_name,)
-        patterns = [
-            url(r'^(\d+)/(\d+)/dc/$',self.wrapper(self.delete_course),name="%s_%s_dc"%app_model_name)
-        ]
-        return patterns
 
 star.site.register(models.Customer,CustomerConfig)
 
 class ConsultRecordConfig(star.StarkConfig):
-    list_display = ["customer","consultant","date"]
+
+    def get_date(self,obj=None,is_header=False):
+        if is_header:
+            return "最后跟进日期"
+        return obj.date.strftime("%Y-%m-%d")
+
+
+    list_display = ["customer","consultant",get_date]
     show_add_btn = True
     comb_filters = [
         star.FilterOption("customer")
     ]
+
     def changelist_view(self,request,*args,**kwargs):
         customer = request.GET.get("customer")
+
         # session 中获取当前用户ID
-        current_login_user_id = 6
-        ct = models.Customer.objects.filter(consultant=current_login_user_id,id=customer).count()
+
+        current_login_user_id =  request.session.get (settings.LOGIN_INFO) ["user_id"]
+        ct = models.Customer.objects.filter(consultant_id=current_login_user_id,id=customer).count()
         if not ct:
             return HttpResponse("别抢客户呀...")
         return super(ConsultRecordConfig,self).changelist_view(request,*args,**kwargs)
@@ -334,3 +298,9 @@ class StudentRecordConfig(star.StarkConfig):
 star.site.register(models.StudentRecord,StudentRecordConfig)
 
 star.site.register(models.Student,StudentConfig)
+
+
+class SaleRankConfig(star.StarkConfig):
+    list_display = ["user","num","weight"]
+    show_add_btn = True
+star.site.register(models.SaleRank,SaleRankConfig)

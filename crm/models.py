@@ -6,6 +6,7 @@ class Department(models.Model):
     '''
     部门表
     '''
+
     title = models.CharField(max_length=16,verbose_name="部门名称")
     code = models.IntegerField(verbose_name="部门编号",unique=True,null=True)
 
@@ -155,10 +156,37 @@ class Customer(models.Model):
 
     consultant = models.ForeignKey(verbose_name="课程顾问",to="UserInfo",related_name="consultant",limit_choices_to={"depart_id":1001})
     date = models.DateField(verbose_name="咨询日期",auto_now_add=True)
+    recv_date = models.DateField(verbose_name='接客时间', null=True, blank=True)
     last_consult_date = models.DateField(verbose_name="最后跟进日期",auto_now_add=True)
 
     def __str__(self):
         return "姓名：{0},QQ{1}".format(self.name,self.qq)
+
+class CustomerDistribution(models.Model):
+    '''
+    客户分配表
+    '''
+    user = models.ForeignKey(verbose_name = "课程顾问",to = 'UserInfo',related_name = "course_teacher",limit_choices_to = {"depart_id":1002})
+    customer = models.ForeignKey(verbose_name = "客户",to = "Customer",related_name = "dealers")
+    create_time = models.DateField()
+    status_choices = (
+        (1,"正在跟单"),
+        (2,"已成单"),
+        (3,"3天未跟进"),
+        (4,"15天未成单"),
+    )
+    status = models.IntegerField(verbose_name = "状态",choices = status_choices,default = 1)
+    memo = models.CharField(verbose_name = "备注",max_length = 255)
+
+
+
+class SaleRank(models.Model):
+    '''
+    销售权重表
+    '''
+    user = models.ForeignKey(to = "UserInfo",limit_choices_to = {"depart_id":1001},verbose_name = "姓名")
+    num = models.IntegerField(verbose_name = "每日可转化数量")
+    weight = models.IntegerField(verbose_name = "权重")
 
 class ConsultRecord(models.Model):
     '''

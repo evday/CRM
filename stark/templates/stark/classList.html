@@ -1,12 +1,6 @@
-{% load staticfiles %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
-    <style>
+{% extends 'stark/layout.html' %}
+{% block css %}
+<style>
         .list-filter a {
             display: inline-block;
             padding: 3px 6px;
@@ -20,9 +14,8 @@
             color: white;
         }
     </style>
-</head>
-<body>
-
+{% endblock %}
+{% block body %}
 
 <div class="container" style="margin-top: 50px">
 
@@ -113,6 +106,4 @@
         </div>
     </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stark/css/stark_form.css' %}">
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap-datetimepicker.min.css' %}">
+    {% block css %}
+
+    {% endblock %}
+</head>
+<body>
+{% block body %}
+{% endblock %}
+</body>
+{% block js %}
+
+{% endblock %}
+</html>

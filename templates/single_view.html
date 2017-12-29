@@ -1,0 +1,40 @@
+{% extends 'stark/layout.html' %}
+{% block body %}
+    <div class="container text-center" style="margin-top: 50px">
+    <div class="panel panel-primary">
+        <div class="panel-heading">客户信息录入</div>
+        <div class="panel-body">
+                <div class="row col-md-6 col-md-offset-2">
+        <form method="post" novalidate class="form-horizontal">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-3 control-label">{{ field.label }}：</label>
+                    <div class="col-sm-9" style="position: relative">
+                        <!-- 判断，如果field是ModelChoiceField，则FK； 如果是ModelMultipleChoiceField，则M2M -->
+                        <div class="col-md-10">
+
+
+                            {{ field }}
+
+                        </div>
+
+                        <div class="col-sm-6">
+                            <span class="error_msg">{{ field.errors.0 }}</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            {% endfor %}
+            <div class="col-md-offset-9">
+                <button type="submit" value="提交" class="btn btn-primary" id="save_btn">提交</button>
+            </div>
+
+        </form>
+    </div>
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

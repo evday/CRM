@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'crm.middleware.loginmiddle.LoginMiddleware',
 ]
 
 ROOT_URLCONF = 'crmpro.urls'
@@ -124,4 +125,14 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),
+]
+
+LOGIN_INFO = "login_info"
+
+
+#自定义消息提醒
+MESSAGE_CLASSES = [
+    'crmpro.utils.message.email.Email',
+    'crmpro.utils.message.msg.Msg',
+    'crmpro.utils.message.wx.WeChat',
 ]
