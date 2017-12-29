@@ -5,6 +5,6 @@ class WeChat(BaseMessage):
         pass
 
     def send(self,subject,body,to,name):
-        print ('========================================================================')
+
         print('微信发送成功')
 

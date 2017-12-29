@@ -136,3 +136,9 @@ MESSAGE_CLASSES = [
     'crmpro.utils.message.msg.Msg',
     'crmpro.utils.message.wx.WeChat',
 ]
+
+SALE_ID_LIST = "szq_sale_id_list"
+
+SALE_ID_LIST_ORIGIN = "szq_sale_id_list_origin"
+
+SALE_ID_RESET = "szq_sale_id_reset"

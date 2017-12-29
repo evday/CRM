@@ -164,6 +164,7 @@ class CustomerConfig(star.StarkConfig):
 
                 #获取销售ID
                 sale_id = AutoSale.get_sale_id()
+                sale_obj = models.UserInfo.objects.filter (id = sale_id).first ()
 
                 if not sale_id:
                     return HttpResponse("无销售顾问，无法进行自动分配")
@@ -180,7 +181,7 @@ class CustomerConfig(star.StarkConfig):
                         models.CustomerDistribution.objects.create(customer=new_customer,user_id=sale_id,create_time=current_time)
 
                         #发送提示消息
-                        message.send_message('你别走了','三个月工资太多了','1194984735@qq.com','方少')
+                        message.send_message('你别走了','三个月工资太多了',sale_obj.email,sale_obj.name)
 
                 except Exception as e:
                     #创建客户或者分配销售异常

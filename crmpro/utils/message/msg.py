@@ -9,6 +9,6 @@ class Msg(BaseMessage):
         pass
 
     def send(self,subject,body,to,name):
-        print ('========================================================================')
+
         print('短信发送成功')
 
