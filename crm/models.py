@@ -1,5 +1,5 @@
 from django.db import models
-
+from rbac import models as rbac_model
 # Create your models here.
 
 class Department(models.Model):
@@ -17,6 +17,7 @@ class UserInfo(models.Model):
     '''
     员工表
     '''
+    auth = models.OneToOneField(verbose_name = "用户权限",to = rbac_model.User,null = True,blank = True)
     name = models.CharField(max_length=16,verbose_name="员工姓名")
     username = models.CharField(max_length=32,verbose_name="用户名")
     password = models.CharField(max_length=64,verbose_name="密码")

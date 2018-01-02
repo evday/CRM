@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crm.apps.CrmConfig',
+    'rbac.apps.RbacConfig',
     'stark.apps.StarkConfig',
 ]
 
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'crm.middleware.loginmiddle.LoginMiddleware',
+    'rbac.middlewares.rbac.RbacMiddleware',
 ]
 
 ROOT_URLCONF = 'crmpro.urls'
@@ -142,3 +144,9 @@ SALE_ID_LIST = "szq_sale_id_list"
 SALE_ID_LIST_ORIGIN = "szq_sale_id_list_origin"
 
 SALE_ID_RESET = "szq_sale_id_reset"
+
+VALID_URL = ["/login/", "/index/",]
+
+PERMISSION_URL_DICT_KEY = "permission_url_dict_key"
+
+PERMISSION_MENU_KEY = "permission_menu_key"

@@ -1,0 +1,9 @@
+.hides {
+    display: none;
+}
+.panel-body a {
+    margin-left: 20px;
+}
+.panel-body a.active {
+    color: red;
+}

@@ -18,6 +18,8 @@ from crm.form import SingleForm
 from crmpro.utils import message
 
 
+
+
 class CustomerConfig(star.StarkConfig):
 
     edit_link = ["qq",]
@@ -34,6 +36,7 @@ class CustomerConfig(star.StarkConfig):
         for item in course_list:
             temp = "<a style='display:inline-block;padding:3px 5px;border:1px solid blue;margin:2px;' href='/stark/crm/customer/%s/%s/dc/'>%s<span class='glyphicon glyphicon-remove'></span></a>"%(obj.pk,item.pk,item.name)
             html.append(temp)
+
         return mark_safe("".join(html))
 
     def display_status(self,obj = None,is_header = False):
@@ -190,6 +193,16 @@ class CustomerConfig(star.StarkConfig):
                 return HttpResponse("录入成功")
             else:
                 return render(request,'single_view.html',{"form":form})
+
+    def multi_view(self,request):
+        '''
+        批量导入
+        :param request:
+        :return:
+        '''
+        if request.method == "GET":
+            return render(request,'multi_view.html')
+
 
 
 

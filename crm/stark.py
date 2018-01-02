@@ -18,6 +18,7 @@ from crm import models
 from crm.configs.student import StudentConfig
 from crm.configs.customer import CustomerConfig
 from crmpro.utils.pager import Pagination
+from crm.baseclass import BasePermission
 
 class DepartmentConfigForm(ModelForm):
     class Meta:
@@ -61,7 +62,7 @@ class UserInfoConfigForm(ModelForm):
             }
         }
 
-class UserInfoConfig(star.StarkConfig):
+class UserInfoConfig(BasePermission,star.StarkConfig):
     list_display = ["name","username","email","depart"]
 
     def multi_del(self,request):
@@ -108,7 +109,7 @@ class SchoolConfigForm(ModelForm):
             "title": {"required": "校区名称不能为空"},
         }
 
-class SchoolConfig(star.StarkConfig):
+class SchoolConfig(BasePermission,star.StarkConfig):
     list_display = ["title",]
     edit_link = ["title",]
     show_add_btn = True

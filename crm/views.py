@@ -1,8 +1,9 @@
 import json
 
 from django.shortcuts import render,HttpResponse
-from crm import models
+from rbac import models
 from django.conf import settings
+from rbac.service.init_permission import init_permission
 # Create your views here.
 def login(request):
     if request.method == "GET":
@@ -22,10 +23,11 @@ def login(request):
             state["state"] = "pwd_none"
             return HttpResponse(json.dumps(state))
 
-        user = models.UserInfo.objects.filter(username=username, password=password).first()
+        user = models.User.objects.filter(username=username, password=password).first()
         if user:
             state["state"] = "login_success"
             request.session[settings.LOGIN_INFO] = {"user_id":user.id,"username":user.username}
+            init_permission(user,request)
 
         else:
             state["state"] = "failed"
@@ -34,3 +36,6 @@ def login(request):
 
 def index(request):
     return HttpResponse("登录成功")
+
+
+
