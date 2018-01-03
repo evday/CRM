@@ -1,6 +1,6 @@
 import json
 
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect
 from rbac import models
 from django.conf import settings
 from rbac.service.init_permission import init_permission
@@ -27,6 +27,7 @@ def login(request):
         if user:
             state["state"] = "login_success"
             request.session[settings.LOGIN_INFO] = {"user_id":user.id,"username":user.username}
+
             init_permission(user,request)
 
         else:
@@ -35,7 +36,12 @@ def login(request):
         return HttpResponse(json.dumps(state))
 
 def index(request):
+
     return HttpResponse("登录成功")
+
+def logout(request):
+    request.session.pop(settings.LOGIN_INFO)
+    return redirect("/login/")
 
 
 

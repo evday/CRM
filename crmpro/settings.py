@@ -145,7 +145,7 @@ SALE_ID_LIST_ORIGIN = "szq_sale_id_list_origin"
 
 SALE_ID_RESET = "szq_sale_id_reset"
 
-VALID_URL = ["/login/", "/index/",]
+VALID_URL = ["/login/", "/index/","/logout/",]
 
 PERMISSION_URL_DICT_KEY = "permission_url_dict_key"
 

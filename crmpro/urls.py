@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^stark/', site.urls),
     url(r'^login/$', views.login),
+    url(r'^logout/$', views.logout),
     url(r'^index/$', views.index),
 
 ]

@@ -1,0 +1,26 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        菜单列表
+    </div>
+    <div class="panel-body">
+        {% for k,cate in menu_dict.items %}
+            <div class="panel panel-primary">
+            <div class="panel-heading item_permission">{{ cate.menu_title }}</div>
+            {% if cate.menu_active %}
+                <div class="panel-body ">
+            {% else %}
+                <div class="panel-body  hides">
+            {% endif %}
+        {% for v in cate.children %}
+            {% if v.active %}
+                <p><a href="{{ v.url }}" class="active">{{ v.title }}</a></p>
+            {% else %}
+                <p><a href="{{ v.url }}">{{ v.title }}</a></p>
+            {% endif %}
+        {% endfor %}
+        </div>
+        </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>

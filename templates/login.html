@@ -1,4 +1,4 @@
-{% extends 'stark/layout.html' %}
+
 {% load staticfiles %}
 {% block css %}
     <style>
@@ -6,10 +6,11 @@
         background-color: #f8f8f8
     }
     </style>
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
 {% endblock %}
 
 
-{% block body %}
+{% block content %}
     <div class="container   col-md-4 col-lg-offset-4 ">
 
     <div class="panel panel-info " style="margin-top: 100px">

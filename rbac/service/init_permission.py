@@ -29,7 +29,7 @@ def init_permission(user,request):
 
     ).distinct() #获取权限信息列表，并去重
 
-    print(permission_list)
+
     sub_permission = []
     for item in permission_list:
         tpl = {

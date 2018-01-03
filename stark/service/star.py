@@ -414,6 +414,7 @@ class StarkConfig(object):
 
     # 列表页面视图
     def changelist_view(self, request, *args, **kwargs):
+
         if request.method == "POST" and self.get_show_actions():
             func_name_str = request.POST.get("list_action")  # 取到函数名
             action_func = getattr(self, func_name_str)  # 利用反射,找到对应的函数

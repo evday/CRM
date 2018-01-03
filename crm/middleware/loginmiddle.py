@@ -28,6 +28,7 @@ class LoginMiddleware(MiddlewareMixin):
         if request.path_info == "/login/":
             return None
         elif request.session.get(settings.LOGIN_INFO):
+            request.user_info = request.session.get(settings.LOGIN_INFO)["username"]
             return None
         else:
             return redirect('/login/')

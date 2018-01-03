@@ -1,0 +1,95 @@
+{% load rbac %}
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="{% static 'rbac/rbac.css' %}">
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'stark/css/stark_form.css' %}">
+    <link rel="stylesheet" href="{% static 'stark/bootstrap/css/bootstrap-datetimepicker.min.css' %}">
+    <style>
+        .sidbar {
+            position: absolute;
+            left: 0;
+            top: 98px;
+            bottom: 0;
+        }
+
+        .content {
+            position: absolute;
+            left: 231px;
+            right: 0;
+            top: 48px;
+            bottom: 0;
+            overflow: scroll
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .my-navbar a {
+            background: transparent !important;
+            color: #fff !important
+        }
+
+        .my-navbar a:hover {
+            color: #45bcf9 !important;
+            background: transparent;
+            outline: 0
+        }
+
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top my-navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="font-size: 30px">C&nbsp;R&nbsp;M</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user_info %}
+                    <li><a href=""><span class="glyphicon glyphicon-user">&#8195;{{ request.user_info }}</span></a>
+                    </li>
+                    <li><a href="/logout/"><span>注销</span></a></li>
+                {% else %}
+                    <li><a href="/login/"><span class="glyphicon glyphicon-user" style="font-size: 15px"></span>&nbsp;登&nbsp;录</a>
+                    </li>
+                    <li><a href="/register/"><span class="glyphicon glyphicon-user" style="font-size: 15px"><span
+                            class=" glyphico glyphicon-plus-sign"
+                            style="font-size: 2px;"></span></span>&nbsp;注&nbsp;册</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" style="margin-top: 50px">
+
+    <div class="col-md-2 sidbar">
+        {% menu_html request %}
+        <div class="col-md-10 content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+
+</div>
+<script src="{% static 'stark/bootstrap/js/jquery-3.1.1.js' %}"></script>
+<script src="{% static 'rbac/rbac.js' %}"></script>
+</body>
+</html>
