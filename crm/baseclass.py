@@ -12,7 +12,7 @@ class BasePermission(object):
     def get_edit_link(self):
         code_list = self.request.permission_code_list
 
-        if "edit" in code_list:
+        if "change" in code_list:
             return super().__init__.get_edit_link()
         else:
             return []

@@ -21,7 +21,7 @@ from crmpro.utils import message
 
 
 class CustomerConfig(star.StarkConfig):
-
+    show_add_btn = True
     edit_link = ["qq",]
     def display_gender(self,obj = None,is_header = False):
         if is_header:

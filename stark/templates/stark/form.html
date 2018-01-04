@@ -10,8 +10,25 @@
                         <!-- 判断，如果field是ModelChoiceField，则FK； 如果是ModelMultipleChoiceField，则M2M -->
                         <div class="col-md-10">
 
-
-                            {{ dic.item }}
+                            {% if dic.is_date %}
+                                <div class="col-md-12">
+                                        <div class="form-group inline-group">
+                                            <div class="errors"></div>
+                                            <div class="input-group date form_date" data-date=""
+                                                 data-date-format="dd MM yyyy"
+                                                 data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+                                                <input class="form-control" size="16" name="date_choice" type="text" value="" id="rli"
+                                                       readonly
+                                                       placeholder="请选择日期"/>
+                                                <span class="input-group-addon"><span
+                                                        class="glyphicon glyphicon-calendar"></span></span>
+                                            </div>
+                                            <input type="hidden" id="dtp_input2" value=""/><br/>
+                                        </div>
+                                </div>
+                            {% else %}
+                                {{ dic.item }}
+                            {% endif %}
 
                         </div>
                         <div style="position: absolute;right: 75px;top: 8px">

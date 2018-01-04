@@ -454,6 +454,8 @@ class StarkConfig(object):
             form = model_form_class(request.POST)
             if form.is_valid():
                 # 数据库中创建新数据
+                print(request.POST.get ("date_choice"))
+                form.instance.recv_date = request.POST.get("date_choice")
                 new_obj = form.save()
                 if _popbackid:
                     # 是一个popup请求
